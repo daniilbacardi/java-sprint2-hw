@@ -42,10 +42,10 @@ public class YearlyReport {
                 int profitOfTheMonth;
                 profitOfTheMonth = gainRecord.get(record.month) - costRecord.get(record.month);
                 if (profitOfTheMonth < 0) {
-                    System.out.println("Убыток в " + monthlyReport.monthTitle[record.month - 1] + " месяце составил: "
+                    System.out.println("Убыток за " + monthlyReport.monthTitle[record.month - 1] + " месяц составил: "
                             + profitOfTheMonth + " руб.");
                 } else {
-                    System.out.println("Прибыль в " + monthlyReport.monthTitle[record.month - 1] + " месяце составила: "
+                    System.out.println("Прибыль за " + monthlyReport.monthTitle[record.month - 1] + " месяц составила: "
                             + profitOfTheMonth + " руб.");
                 }
             }
