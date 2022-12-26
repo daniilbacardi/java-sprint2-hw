@@ -24,7 +24,7 @@ public class Main {
             } else if (userInput == 2) {
                 readYearlyReport();
             } else if (userInput == 3) {
-                compareMonthlyAndYearlyReports();
+                compareReports();
             } else if (userInput == 4) {
                 printMonthlyReports();
             } else if (userInput == 5) {
@@ -49,7 +49,7 @@ public class Main {
     }
 
     private static void readYearlyReport() {
-        if (!yearlyReport.data.isEmpty()) {
+        if (!yearlyReport.content.isEmpty()) {
             System.out.println("Годовой отчет считан.");
         } else {
             System.out.println("Годовой отчет пустой");
@@ -58,7 +58,7 @@ public class Main {
 
     private static void readMonthlyReport() {
         for (int i = 0; i < monthlyReport.length; i++) {
-            if (!monthlyReport[i].data.isEmpty()) {
+            if (!monthlyReport[i].content.isEmpty()) {
                 System.out.println("Месячный отчет " + (i + 1) + " считан");
             } else {
                 System.out.println("Месячный отчет пустой");
@@ -66,9 +66,9 @@ public class Main {
         }
     }
 
-    private static void compareMonthlyAndYearlyReports() {
+    private static void compareReports() {
         for (int i = 0; i < monthlyReport.length; i++) {
-            if (!monthlyReport[i].data.isEmpty() || !yearlyReport.data.isEmpty()) {
+            if (!monthlyReport[i].content.isEmpty() && !yearlyReport.content.isEmpty()) {
                 if (monthlyReport[i].sumCosts() == yearlyReport.sumCostsMonth(i)) {
                     System.out.println("Расходы по месяцу " + (i + 1) + " совпадают.");
                     System.out.println("Сумма: " + monthlyReport[i].sumCosts());

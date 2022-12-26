@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class MonthlyReport {
-    public HashMap<String, MonthlyStat> data = new HashMap<>();
+    public HashMap<String, MonthlyStat> content = new HashMap<>();
 
     public MonthlyReport(String path) {
         String content = readFileContentsOrNull(path);
@@ -16,10 +16,10 @@ public class MonthlyReport {
             boolean isExpense = Boolean.parseBoolean(parts[1]);
             int quantity = Integer.parseInt(parts[2]);
             int sumOfOne = Integer.parseInt(parts[3]);
-            if (!data.containsKey(itemName)) {
-                data.put(itemName, new MonthlyStat());
+            if (!this.content.containsKey(itemName)) {
+                this.content.put(itemName, new MonthlyStat());
             }
-            MonthlyStat stat = data.get(itemName);
+            MonthlyStat stat = this.content.get(itemName);
             if (isExpense) {
                 stat.costs = quantity * sumOfOne;
             } else {
@@ -38,8 +38,8 @@ public class MonthlyReport {
     public void calcMaxGain() {
         int maxGain = 0;
         String nameMaxGain = "";
-        for (String itemName : data.keySet()) {
-            MonthlyStat stat = data.get(itemName);
+        for (String itemName : content.keySet()) {
+            MonthlyStat stat = content.get(itemName);
             if (maxGain < stat.gain) {
                 maxGain = stat.gain;
                 nameMaxGain = itemName;
@@ -51,8 +51,8 @@ public class MonthlyReport {
     public void calcMaxCosts() {
         int maxCosts = 0;
         String nameMaxCosts = "";
-        for (String itemName : data.keySet()) {
-            MonthlyStat stat = data.get(itemName);
+        for (String itemName : content.keySet()) {
+            MonthlyStat stat = content.get(itemName);
             if (maxCosts < stat.costs) {
                 maxCosts = stat.costs;
                 nameMaxCosts = itemName;
@@ -63,8 +63,8 @@ public class MonthlyReport {
 
     public int sumCosts() {
         int sumCosts = 0;
-        for (String itemName : data.keySet()) {
-            MonthlyStat stat = data.get(itemName);
+        for (String itemName : content.keySet()) {
+            MonthlyStat stat = content.get(itemName);
             sumCosts += stat.costs;
         }
         return sumCosts;
@@ -72,8 +72,8 @@ public class MonthlyReport {
 
     public int sumGain() {
         int sumGain = 0;
-        for (String itemName : data.keySet()) {
-            MonthlyStat stat = data.get(itemName);
+        for (String itemName : content.keySet()) {
+            MonthlyStat stat = content.get(itemName);
             sumGain += stat.gain;
         }
         return sumGain;

@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class YearlyReport {
-    public HashMap<Integer, YearlyStat> data = new HashMap<>();
+    public HashMap<Integer, YearlyStat> content = new HashMap<>();
     int numberOfMonth = 3;
 
     public YearlyReport(String path) {
@@ -16,10 +16,10 @@ public class YearlyReport {
             int month = Integer.parseInt(parts[0]);
             int amount = Integer.parseInt(parts[1]);
             boolean isExpense = Boolean.parseBoolean(parts[2]);
-            if (!data.containsKey(month)) {
-                data.put(month, new YearlyStat());
+            if (!this.content.containsKey(month)) {
+                this.content.put(month, new YearlyStat());
             }
-            YearlyStat stat = data.get(month);
+            YearlyStat stat = this.content.get(month);
             if (isExpense) {
                 stat.costs += amount;
             } else {
@@ -30,9 +30,9 @@ public class YearlyReport {
 
     public void printYearlyReport() {
         System.out.println("За 2021 год");
-        for (Integer numMonth : data.keySet()) {
+        for (Integer numMonth : content.keySet()) {
             System.out.println("За месяц № " + numMonth);
-            YearlyStat stat = data.get(numMonth);
+            YearlyStat stat = content.get(numMonth);
             System.out.println("Прибыль " + (stat.gain - stat.costs));
         }
 
@@ -45,8 +45,8 @@ public class YearlyReport {
 
     public void sumAllGain(){
         int sumAllGain = 0;
-        for (Integer numMonth : data.keySet()) {
-            YearlyStat stat = data.get(numMonth);
+        for (Integer numMonth : content.keySet()) {
+            YearlyStat stat = content.get(numMonth);
             sumAllGain += stat.gain;
         }
         System.out.println(sumAllGain/numberOfMonth);
@@ -54,19 +54,19 @@ public class YearlyReport {
 
     public void sumAllCosts(){
         int sumAllCosts = 0;
-        for (Integer numMonth : data.keySet()) {
-            YearlyStat stat = data.get(numMonth);
+        for (Integer numMonth : content.keySet()) {
+            YearlyStat stat = content.get(numMonth);
             sumAllCosts += stat.costs;
         }
         System.out.println(sumAllCosts/numberOfMonth);
     }
 
     public int sumCostsMonth(int i) {
-        YearlyStat stat = data.get(i + 1);
+        YearlyStat stat = content.get(i + 1);
         return stat.costs;
     }
     public int sumGainMonth(int i) {
-        YearlyStat stat = data.get(i + 1);
+        YearlyStat stat = content.get(i + 1);
         return stat.gain;
     }
 
