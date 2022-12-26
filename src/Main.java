@@ -30,7 +30,7 @@ public class Main {
                 System.out.println("Вы вышли из программы");
                 break;
             } else {
-                System.out.println("Извините, такой команды пока нет.");
+                System.out.println("Извините, такой команды пока нет.\n ");
             }
         }
     }
