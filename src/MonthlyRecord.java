@@ -1,4 +1,4 @@
-public class MonthlyStat {
+public class MonthlyRecord {
     public int costs;
     public int gain;
 }
