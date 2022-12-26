@@ -2,34 +2,31 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static YearlyReport yearlyReport = new YearlyReport("resources/y.2021.csv");
-    public static MonthlyReport[] monthlyReport = new MonthlyReport[3];
+    public static MonthlyReport monthlyReport = new MonthlyReport();
+    public static YearlyReport yearlyReport = new YearlyReport();
 
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
-        for (int i = 0; i < monthlyReport.length; i++) {
-            monthlyReport[i] = new MonthlyReport("resources/m.20210" + (i + 1) + ".csv");
-        }
-
         System.out.println("«Автоматизация бухгалтерии»");
+        System.out.println("Для работы необходимо загрузить отчеты");
         System.out.println(" ");
 
         while (true) {
             printMenu();
             int userInput = scanner.nextInt();
             if (userInput == 1) {
-                readMonthlyReport();
+                monthlyReport.downloadMonthlyReports();
             } else if (userInput == 2) {
-                readYearlyReport();
+                yearlyReport.downloadYearlyReports();
             } else if (userInput == 3) {
-                compareReports();
+                checkingReportsExists();
             } else if (userInput == 4) {
-                printMonthlyReports();
+                monthlyReport.printMonthlyStatistic();
             } else if (userInput == 5) {
-                yearlyReport.printYearlyReport();
-             } else if (userInput == 0) {
+                yearlyReport.printYearlyStatistic();
+            } else if (userInput == 0) {
                 System.out.println("Вы вышли из программы");
                 break;
             } else {
@@ -37,64 +34,47 @@ public class Main {
             }
         }
     }
-
-    public static void printMenu() {
-        System.out.println("Выберите действие:");
-        System.out.println("1. Считать все месячные отчёты");
-        System.out.println("2. Считать годовой отчёт");
-        System.out.println("3. Сверить отчёты");
-        System.out.println("4. Вывести информацию о всех месячных отчётах");
-        System.out.println("5. Вывести информацию о годовом отчёте");
-        System.out.println("0. Выход");
-    }
-
-    private static void readYearlyReport() {
-        if (!yearlyReport.content.isEmpty()) {
-            System.out.println("Годовой отчет считан.");
-        } else {
-            System.out.println("Годовой отчет пустой");
-        }
-    }
-
-    private static void readMonthlyReport() {
-        for (int i = 0; i < monthlyReport.length; i++) {
-            if (!monthlyReport[i].content.isEmpty()) {
-                System.out.println("Месячный отчет " + (i + 1) + " считан");
+        public static void checkingReportsExists() {
+            if (yearlyReport.isYearlyReportsExists() && monthlyReport.monthlyRecords.isEmpty()) {
+                System.out.println("Для сверки необходимо загрузить годовой и месячные отчеты\n ");
+            } else if (yearlyReport.isYearlyReportsExists()) {
+                System.out.println("Без годового отчета сверку выполнить нельзя. Загрузите его.\n ");
+            } else if (monthlyReport.monthlyRecords.isEmpty()) {
+                System.out.println("Без месячных отчетов сверку выполнить нельзя. Загрузите их.\n ");
             } else {
-                System.out.println("Месячный отчет пустой");
+                reportsCompare();
             }
         }
-    }
-
-    private static void compareReports() {
-        for (int i = 0; i < monthlyReport.length; i++) {
-            if (!monthlyReport[i].content.isEmpty() && !yearlyReport.content.isEmpty()) {
-                if (monthlyReport[i].sumCosts() == yearlyReport.sumCostsMonth(i)) {
-                    System.out.println("Расходы по месяцу " + (i + 1) + " совпадают.");
-                    System.out.println("Сумма: " + monthlyReport[i].sumCosts());
+        public static void reportsCompare() {
+            boolean isValid = true;
+            for (YearlyRecord yearlyRecord : yearlyReport.yearlyRecords) {
+                if (yearlyRecord.isExpense) {
+                    if (monthlyReport.getSumGainOrCostForMonth(yearlyRecord.month, true)
+                            != yearlyRecord.amount) {
+                        System.out.println("Убыток за " + monthlyReport.monthTitle[yearlyRecord.month - 1] +
+                                " несоответствует годовому отчету\n ");
+                        isValid = false;
+                    }
                 } else {
-                    System.out.println("Расходы по месяцу " + (i + 1) + " не совпадают!!!");
+                    if (monthlyReport.getSumGainOrCostForMonth(yearlyRecord.month, false)
+                            != yearlyRecord.amount) {
+                        System.out.println("Доход за " + monthlyReport.monthTitle[yearlyRecord.month - 1] +
+                                " несоответствует годовому отчету\n ");
+                        isValid = false;
+                    }
                 }
-                if (monthlyReport[i].sumGain() == yearlyReport.sumGainMonth(i)) {
-                    System.out.println("Доходы по месяцу " + (i + 1) + " совпадают.");
-                    System.out.println("Сумма: " + monthlyReport[i].sumGain());
-                    System.out.println(" ");
-                } else {
-                    System.out.println("Доходы по месяцу " + (i + 1) + " не совпадают!!!");
-                    System.out.println(" ");
-                }
-            } else {
-                System.out.println("Отчет не считан, выполнить сверку не возможно.");
-                break;
+            } if (isValid) {
+                System.out.println("Сверка отчетов успешно завершена. Расхождений - не выявлено.\n ");
             }
         }
-    }
 
-    private static void printMonthlyReports() {
-        for (int i = 0; i < monthlyReport.length; i++) {
-            System.out.println("Отчет за месяц " + (i + 1));
-            monthlyReport[i].printMonthlyReport();
-            System.out.println(" ");
+        public static void printMenu() {
+            System.out.println("Выберите действие - введите цифру:");
+            System.out.println("1. Загрузить все месячные отчёты");
+            System.out.println("2. Загрузить годовой отчёт");
+            System.out.println("3. Сверить загруженные отчёты");
+            System.out.println("4. Вывести статистику по всем месячным отчётам");
+            System.out.println("5. Вывести статистику по годовому отчёту");
+            System.out.println("0. Выйти из приложения");
         }
     }
-}

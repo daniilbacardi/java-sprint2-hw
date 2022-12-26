@@ -2,89 +2,107 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class MonthlyReport {
-    public HashMap<String, MonthlyStat> content = new HashMap<>();
+    HashMap<Integer, ArrayList<MonthlyRecord>> monthlyRecords = new HashMap<>();
+    String[] monthTitle = {"январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"};
 
-    public MonthlyReport(String path) {
-        String content = readFileContentsOrNull(path);
-        String[] lines = content.split("\r?\n");
-        for (int i = 1; i < lines.length; i++) {
-            String line = lines[i];
-            String[] parts = line.split(",");
-            String itemName = parts[0];
-            boolean isExpense = Boolean.parseBoolean(parts[1]);
-            int quantity = Integer.parseInt(parts[2]);
-            int sumOfOne = Integer.parseInt(parts[3]);
-            if (!this.content.containsKey(itemName)) {
-                this.content.put(itemName, new MonthlyStat());
-            }
-            MonthlyStat stat = this.content.get(itemName);
-            if (isExpense) {
-                stat.costs = quantity * sumOfOne;
-            } else {
-                stat.gain = quantity * sumOfOne;
+    void readMonthlyReports() {
+        for (int month = 1; month <= 12; month++) {
+            if (Files.exists(Path.of("resources/m.20210" + month + ".csv"))){
+                ArrayList<MonthlyRecord> recordMonth = new ArrayList<>();
+                String monthRecord = readFileContentsOrNull("resources/m.20210" + month + ".csv");
+                String[] lines = monthRecord.split("\r?\n");
+                for (int i = 1; i < lines.length; i++) {
+                    String line = lines[i];
+                    String[] parts = line.split(",");
+                    String itemName = parts[0];
+                    boolean isExpense = Boolean.parseBoolean(parts[1]);
+                    int quantity = Integer.parseInt(parts[2]);
+                    int sumOfOne = Integer.parseInt(parts[3]);
+                    MonthlyRecord monthlyRecord = new MonthlyRecord(itemName, isExpense, quantity, sumOfOne);
+                    recordMonth.add(monthlyRecord);
+                    monthlyRecords.put(month, recordMonth);
+                }
             }
         }
     }
 
-    public void printMonthlyReport() {
-        System.out.println("Самый прибыльный товар: ");
-        calcMaxGain();
-        System.out.println("Самая большая трата: ");
-        calcMaxCosts();
+    int getSumGainOrCostForMonth(int monthKey, boolean isExpense) {
+        int sum = 0;
+        for (MonthlyRecord month : monthlyRecords.get(monthKey)) {
+            if (month.isExpense == isExpense) {
+                sum += month.quantity * month.sumOfOne;
+            }
+        }
+        return sum;
     }
 
-    public void calcMaxGain() {
+    String getMaxGain(int monthKey) {
         int maxGain = 0;
-        String nameMaxGain = "";
-        for (String itemName : content.keySet()) {
-            MonthlyStat stat = content.get(itemName);
-            if (maxGain < stat.gain) {
-                maxGain = stat.gain;
-                nameMaxGain = itemName;
+        String item;
+        String maxItem = "";
+        int sum;
+        for (MonthlyRecord monthInfo : monthlyRecords.get(monthKey)) {
+            if (!monthInfo.isExpense) {
+                sum = monthInfo.quantity * monthInfo.sumOfOne;
+                item = monthInfo.itemName;
+                if (sum > maxGain) {
+                    maxGain = sum;
+                    maxItem = item;
+                }
             }
         }
-        System.out.println(nameMaxGain + " " + maxGain);
+        return "Самый прибыльный товар: " + maxItem + "\nСумма: " + maxGain;
     }
 
-    public void calcMaxCosts() {
-        int maxCosts = 0;
-        String nameMaxCosts = "";
-        for (String itemName : content.keySet()) {
-            MonthlyStat stat = content.get(itemName);
-            if (maxCosts < stat.costs) {
-                maxCosts = stat.costs;
-                nameMaxCosts = itemName;
+    String getMaxCost(int monthKey) {
+        int maxCost = 0;
+        String item;
+        String maxCostItem = "";
+        int sum;
+        for (MonthlyRecord monthInfo : monthlyRecords.get(monthKey)) {
+            if (monthInfo.isExpense) {
+                sum = monthInfo.quantity * monthInfo.sumOfOne;
+                item = monthInfo.itemName;
+                if (sum > maxCost) {
+                    maxCost = sum;
+                    maxCostItem = item;
+                }
             }
         }
-        System.out.println(nameMaxCosts + " " + maxCosts);
+        return "Самая большая трата: " + maxCostItem + "\nСумма: " + maxCost + "\n ";
     }
 
-    public int sumCosts() {
-        int sumCosts = 0;
-        for (String itemName : content.keySet()) {
-            MonthlyStat stat = content.get(itemName);
-            sumCosts += stat.costs;
+    void downloadMonthlyReports() {
+        if (monthlyRecords.isEmpty()) {
+            readMonthlyReports();
+            System.out.println("Месячные отчеты успешно загружены\n ");
+        } else {
+            System.out.println("Данные по месячным отчетам уже имеются. Повторная загрузка не требуется.\n ");
         }
-        return sumCosts;
     }
 
-    public int sumGain() {
-        int sumGain = 0;
-        for (String itemName : content.keySet()) {
-            MonthlyStat stat = content.get(itemName);
-            sumGain += stat.gain;
+    void printMonthlyStatistic() {
+        if (!monthlyRecords.isEmpty()) {
+            for (int month : monthlyRecords.keySet()) {
+                System.out.println("Отчет за " + monthTitle[month - 1] + ":");
+                System.out.println(getMaxGain(month));
+                System.out.println(getMaxCost(month));
+            }
+        } else {
+            System.out.println("Для вывода статистики необходимо загрузить отчеты");
         }
-        return sumGain;
     }
 
-    private String readFileContentsOrNull(String path) {
+    public String readFileContentsOrNull(String path) {
         try {
             return Files.readString(Path.of(path));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.");
+            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.\n ");
             return null;
         }
     }
 }
+

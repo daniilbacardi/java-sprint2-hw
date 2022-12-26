@@ -2,81 +2,101 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class YearlyReport {
-    public HashMap<Integer, YearlyStat> content = new HashMap<>();
-    int numberOfMonth = 3;
+    ArrayList<YearlyRecord> yearlyRecords;
+    HashMap<Integer, Integer> gainRecord;
+    HashMap<Integer, Integer> costRecord;
+    MonthlyReport monthlyReport = new MonthlyReport();
+    String[] yearTitle = {"2021"};
 
-    public YearlyReport(String path) {
-        String content = readFileContentsOrNull(path);
-        String[] lines = content.split("\r?\n");
+    public YearlyReport() {
+        yearlyRecords = new ArrayList<>();
+        gainRecord = new HashMap<>();
+        costRecord = new HashMap<>();
+    }
+
+    public void readYearlyReport() {
+        String yearRecord = readFileContentsOrNull();
+        String[] lines = yearRecord.split("\r?\n");
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i];
             String[] parts = line.split(",");
             int month = Integer.parseInt(parts[0]);
             int amount = Integer.parseInt(parts[1]);
             boolean isExpense = Boolean.parseBoolean(parts[2]);
-            if (!this.content.containsKey(month)) {
-                this.content.put(month, new YearlyStat());
-            }
-            YearlyStat stat = this.content.get(month);
-            if (isExpense) {
-                stat.costs += amount;
+            YearlyRecord yearlyRecord = new YearlyRecord(month, amount, isExpense);
+            yearlyRecords.add(yearlyRecord);
+        }
+    }
+
+    public void readYearlyStatistic() {
+        for (YearlyRecord record : yearlyRecords) {
+            if (record.isExpense) {
+                costRecord.put(record.month, record.amount);
             } else {
-                stat.gain += amount;
+                gainRecord.put(record.month, record.amount);
+            }
+            if (costRecord.get(record.month) != null && gainRecord.get(record.month) != null) {
+                int profitOfTheMonth;
+                profitOfTheMonth = gainRecord.get(record.month) - costRecord.get(record.month);
+                if (profitOfTheMonth < 0) {
+                    System.out.println("Убыток в " + monthlyReport.monthTitle[record.month - 1] + " месяце составил: "
+                            + profitOfTheMonth + " руб.");
+                } else {
+                    System.out.println("Прибыль в " + monthlyReport.monthTitle[record.month - 1] + " месяце составила: "
+                            + profitOfTheMonth + " руб.");
+                }
             }
         }
     }
 
-    public void printYearlyReport() {
-        System.out.println("За 2021 год");
-        for (Integer numMonth : content.keySet()) {
-            System.out.println("За месяц № " + numMonth);
-            YearlyStat stat = content.get(numMonth);
-            System.out.println("Прибыль " + (stat.gain - stat.costs));
+
+    public void getAverageAmounts() {
+        int sumIncome = 0;
+        for (Integer record : gainRecord.values()) {
+            sumIncome += record;
         }
+        int avgIncome = sumIncome / gainRecord.size();
+        System.out.println("Средняя прибыль за год составила: " + avgIncome + " руб.");
 
-        System.out.println("Средний расход за все месяцы в году:");
-        sumAllCosts();
-        System.out.println("Средний доход за все месяцы в году:");
-        sumAllGain();
-        System.out.println(" ");
-    }
-
-    public void sumAllGain(){
-        int sumAllGain = 0;
-        for (Integer numMonth : content.keySet()) {
-            YearlyStat stat = content.get(numMonth);
-            sumAllGain += stat.gain;
+        int sumExpense = 0;
+        for (Integer record : costRecord.values()) {
+            sumExpense += record;
         }
-        System.out.println(sumAllGain/numberOfMonth);
+        int avgExpense = sumExpense / costRecord.size();
+        System.out.println("Средний расход за год составил: " + avgExpense + " руб.\n ");
     }
 
-    public void sumAllCosts(){
-        int sumAllCosts = 0;
-        for (Integer numMonth : content.keySet()) {
-            YearlyStat stat = content.get(numMonth);
-            sumAllCosts += stat.costs;
+    public void downloadYearlyReports() {
+        if (yearlyRecords.isEmpty()) {
+            readYearlyReport();
+            System.out.println("Годовой отчет успешно загружен\n ");
+        } else {
+            System.out.println("Данные по годовому отчету уже имеются. Повторная загрузка не требуется.\n ");
         }
-        System.out.println(sumAllCosts/numberOfMonth);
     }
 
-    public int sumCostsMonth(int i) {
-        YearlyStat stat = content.get(i + 1);
-        return stat.costs;
+    public void printYearlyStatistic() {
+        if (!yearlyRecords.isEmpty()) {
+            System.out.println("Отчет за " + yearTitle[0] + " год:");
+            readYearlyStatistic();
+            getAverageAmounts();
+        } else {
+            System.out.println("Для вывода статистики необходимо загрузить отчет.\n ");
+        }
     }
-    public int sumGainMonth(int i) {
-        YearlyStat stat = content.get(i + 1);
-        return stat.gain;
+    public boolean isYearlyReportsExists(){
+        return yearlyRecords.isEmpty();
     }
 
-    private String readFileContentsOrNull(String path) {
+    private String readFileContentsOrNull() {
         try {
-            return Files.readString(Path.of(path));
+            return Files.readString(Path.of("resources/y.2021.csv"));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.");
+            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.\n ");
             return null;
         }
     }
-
 }
