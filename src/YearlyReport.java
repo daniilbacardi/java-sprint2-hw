@@ -84,7 +84,7 @@ public class YearlyReport {
             readYearlyStatistic();
             getAverageAmounts();
         } else {
-            System.out.println("Для вывода статистики необходимо загрузить отчет.\n ");
+            System.out.println("Для вывода статистики необходимо загрузить годовой отчет.\n ");
         }
     }
     public boolean isYearlyReportsExists(){

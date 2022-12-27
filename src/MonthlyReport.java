@@ -92,7 +92,7 @@ public class MonthlyReport {
                 System.out.println(getMaxCost(month));
             }
         } else {
-            System.out.println("Для вывода статистики необходимо загрузить отчеты");
+            System.out.println("Для вывода статистики необходимо загрузить месячные отчеты");
         }
     }
 
