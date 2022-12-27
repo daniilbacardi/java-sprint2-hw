@@ -42,11 +42,11 @@ public class YearlyReport {
                 int profitOfTheMonth;
                 profitOfTheMonth = gainRecord.get(record.month) - costRecord.get(record.month);
                 if (profitOfTheMonth < 0) {
-                    System.out.println("Убыток за " + monthlyReport.monthTitle[record.month - 1] + " месяц составил: "
-                            + profitOfTheMonth + " руб.");
+                    System.out.println("Убыток за " + monthlyReport.monthTitle[record.month - 1] +
+                            " месяц составил: " + profitOfTheMonth + " руб.");
                 } else {
-                    System.out.println("Прибыль за " + monthlyReport.monthTitle[record.month - 1] + " месяц составила: "
-                            + profitOfTheMonth + " руб.");
+                    System.out.println("Прибыль за " + monthlyReport.monthTitle[record.month - 1] +
+                            " месяц составила: " + profitOfTheMonth + " руб.");
                 }
             }
         }
@@ -95,7 +95,8 @@ public class YearlyReport {
         try {
             return Files.readString(Path.of("resources/y.2021.csv"));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.\n ");
+            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной " +
+                    "директории.\n ");
             return null;
         }
     }

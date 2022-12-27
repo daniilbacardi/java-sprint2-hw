@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class MonthlyReport {
     HashMap<Integer, ArrayList<MonthlyRecord>> monthlyRecords = new HashMap<>();
-    String[] monthTitle = {"январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"};
+    String[] monthTitle = {"январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь",
+            "октябрь", "ноябрь", "декабрь"};
 
     void readMonthlyReports() {
         for (int month = 1; month <= 12; month++) {
@@ -100,7 +101,8 @@ public class MonthlyReport {
         try {
             return Files.readString(Path.of(path));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.\n ");
+            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной " +
+                    "директории.\n ");
             return null;
         }
     }
