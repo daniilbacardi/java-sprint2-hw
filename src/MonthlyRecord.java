@@ -1,13 +1,13 @@
 class MonthlyRecord {
-    String itemName;
-    boolean isExpense;
-    int quantity;
-    int sumOfOne;
+    final String ITEM_NAME;
+    final boolean IS_EXPENSE;
+    final int QUANTITY;
+    final int SUM_OF_ONE;
 
-    MonthlyRecord(String itemName, boolean isExpense, int quantity, int sumOfOne) {
-        this.itemName = itemName;
-        this.isExpense = isExpense;
-        this.quantity = quantity;
-        this.sumOfOne = sumOfOne;
+    MonthlyRecord(String ITEM_NAME, boolean IS_EXPENSE, int QUANTITY, int SUM_OF_ONE) {
+        this.ITEM_NAME = ITEM_NAME;
+        this.IS_EXPENSE = IS_EXPENSE;
+        this.QUANTITY = QUANTITY;
+        this.SUM_OF_ONE = SUM_OF_ONE;
     }
 }

@@ -33,19 +33,19 @@ public class YearlyReport {
 
     public void readYearlyStatistic() {
         for (YearlyRecord record : yearlyRecords) {
-            if (record.isExpense) {
-                costRecord.put(record.month, record.amount);
+            if (record.IS_EXPENSE) {
+                costRecord.put(record.MONTH, record.AMOUNT);
             } else {
-                gainRecord.put(record.month, record.amount);
+                gainRecord.put(record.MONTH, record.AMOUNT);
             }
-            if (costRecord.get(record.month) != null && gainRecord.get(record.month) != null) {
+            if (costRecord.get(record.MONTH) != null && gainRecord.get(record.MONTH) != null) {
                 int profitOfTheMonth;
-                profitOfTheMonth = gainRecord.get(record.month) - costRecord.get(record.month);
+                profitOfTheMonth = gainRecord.get(record.MONTH) - costRecord.get(record.MONTH);
                 if (profitOfTheMonth < 0) {
-                    System.out.println("Убыток за " + monthlyReport.monthTitle[record.month - 1] +
+                    System.out.println("Убыток за " + monthlyReport.monthTitle[record.MONTH - 1] +
                             " месяц составил: " + profitOfTheMonth + " руб.");
                 } else {
-                    System.out.println("Прибыль за " + monthlyReport.monthTitle[record.month - 1] +
+                    System.out.println("Прибыль за " + monthlyReport.monthTitle[record.MONTH - 1] +
                             " месяц составила: " + profitOfTheMonth + " руб.");
                 }
             }
@@ -95,8 +95,8 @@ public class YearlyReport {
         try {
             return Files.readString(Path.of("resources/y.2021.csv"));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной " +
-                    "директории.\n ");
+            System.out.println("Невозможно прочитать файл с годовым отчётом. Возможно, файл не находится в " +
+                    "директории: resources\\\n ");
             return null;
         }
     }

@@ -29,14 +29,16 @@ public class MonthlyReport {
             }
         }
     }
-
+    //добавил обработку NullPointerException, если нет файла месячного отчета, данные по которому есть в годовом отчете
     int getSumGainOrCostForMonth(int monthKey, boolean isExpense) {
         int sum = 0;
-        for (MonthlyRecord month : monthlyRecords.get(monthKey)) {
-            if (month.isExpense == isExpense) {
-                sum += month.quantity * month.sumOfOne;
+        try{
+            for (MonthlyRecord month : monthlyRecords.get(monthKey)) {
+                if (month.IS_EXPENSE == isExpense) {
+                    sum += month.QUANTITY * month.SUM_OF_ONE;
+                }
             }
-        }
+        }catch (NullPointerException e){}
         return sum;
     }
 
@@ -46,9 +48,9 @@ public class MonthlyReport {
         String maxItem = "";
         int sum;
         for (MonthlyRecord monthInfo : monthlyRecords.get(monthKey)) {
-            if (!monthInfo.isExpense) {
-                sum = monthInfo.quantity * monthInfo.sumOfOne;
-                item = monthInfo.itemName;
+            if (!monthInfo.IS_EXPENSE) {
+                sum = monthInfo.QUANTITY * monthInfo.SUM_OF_ONE;
+                item = monthInfo.ITEM_NAME;
                 if (sum > maxGain) {
                     maxGain = sum;
                     maxItem = item;
@@ -64,9 +66,9 @@ public class MonthlyReport {
         String maxCostItem = "";
         int sum;
         for (MonthlyRecord monthInfo : monthlyRecords.get(monthKey)) {
-            if (monthInfo.isExpense) {
-                sum = monthInfo.quantity * monthInfo.sumOfOne;
-                item = monthInfo.itemName;
+            if (monthInfo.IS_EXPENSE) {
+                sum = monthInfo.QUANTITY * monthInfo.SUM_OF_ONE;
+                item = monthInfo.ITEM_NAME;
                 if (sum > maxCost) {
                     maxCost = sum;
                     maxCostItem = item;
@@ -101,8 +103,8 @@ public class MonthlyReport {
         try {
             return Files.readString(Path.of(path));
         } catch (IOException e) {
-            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной " +
-                    "директории.\n ");
+            System.out.println("Невозможно прочитать файл с месячным отчётом. Возможно, файл не находится в " +
+                    "директории: resources\\\n ");
             return null;
         }
     }

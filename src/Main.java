@@ -48,18 +48,18 @@ public class Main {
         public static void reportsCompare() {
             boolean isValid = true;
             for (YearlyRecord yearlyRecord : yearlyReport.yearlyRecords) {
-                if (yearlyRecord.isExpense) {
-                    if (monthlyReport.getSumGainOrCostForMonth(yearlyRecord.month, true)
-                            != yearlyRecord.amount) {
-                        System.out.println("Убыток за " + monthlyReport.monthTitle[yearlyRecord.month - 1] +
-                                " несоответствует годовому отчету\n ");
+                if (yearlyRecord.IS_EXPENSE) {
+                    if (monthlyReport.getSumGainOrCostForMonth(yearlyRecord.MONTH, true)
+                            != yearlyRecord.AMOUNT) {
+                        System.out.println("Убыток за " + monthlyReport.monthTitle[yearlyRecord.MONTH - 1] +
+                                " несоответствует убытку за тот же месяц в годовом отчете\n ");
                         isValid = false;
                     }
                 } else {
-                    if (monthlyReport.getSumGainOrCostForMonth(yearlyRecord.month, false)
-                            != yearlyRecord.amount) {
-                        System.out.println("Доход за " + monthlyReport.monthTitle[yearlyRecord.month - 1] +
-                                " несоответствует годовому отчету\n ");
+                    if (monthlyReport.getSumGainOrCostForMonth(yearlyRecord.MONTH, false)
+                            != yearlyRecord.AMOUNT) {
+                        System.out.println("Доход за " + monthlyReport.monthTitle[yearlyRecord.MONTH - 1] +
+                                " несоответствует доходу за тот же месяц в годовом отчете\n ");
                         isValid = false;
                     }
                 }

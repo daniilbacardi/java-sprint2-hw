@@ -1,11 +1,11 @@
 public class YearlyRecord {
-    int month;
-    int amount;
-    boolean isExpense;
+    final int MONTH;
+    final int AMOUNT;
+    final boolean IS_EXPENSE;
 
-    YearlyRecord(int month, int amount, boolean isExpense) {
-        this.month = month;
-        this.amount = amount;
-        this.isExpense = isExpense;
+    YearlyRecord(int MONTH, int AMOUNT, boolean IS_EXPENSE) {
+        this.MONTH = MONTH;
+        this.AMOUNT = AMOUNT;
+        this.IS_EXPENSE = IS_EXPENSE;
     }
 }
